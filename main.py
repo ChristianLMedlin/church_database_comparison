@@ -45,5 +45,5 @@ def log_error(e):
     """
     print(e)
 
-raw_html = simple_get('https://www.york.ac.uk/teaching/cws/wws/webpage1.html')
+raw_html = simple_get('http://sexoffender.ncsbi.gov/results.aspx')
 print(raw_html)
