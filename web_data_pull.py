@@ -6,7 +6,8 @@ from main import simple_get
 driver = webdriver.Chrome()
 driver.get("http://sexoffender.ncsbi.gov/disclaimer.aspx")
 driver.find_element_by_id('agree').click()
-driver.find_element_by_id('lname').send_keys("Jones")
-driver.find_element_by_id('fname').send_keys("James")
+driver.find_element_by_id('lname').send_keys("")
+driver.find_element_by_id('fname').send_keys("")
 driver.find_element_by_id('inclaliasnames').click()
 driver.find_element_by_id('searchbutton1').click()
+

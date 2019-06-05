@@ -1,0 +1,5 @@
+.vscode
+church_data.db
+*.log
+__pycache__
+API_Auth.py
