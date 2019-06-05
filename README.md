@@ -3,5 +3,5 @@ This project was commissioned by a local church in an effort to improve their se
 
 The data of the church will be added to a gitignore file to protect the privacy and integrety of the church's members.
 
-#Current technologies being used
+# Current technologies being used
 This project makes use of Selenium for search automation, sqlite3 for the automatic storing of data into a local database to avoid rate-limit wait times after the initial setup, Requests to assist with API use, and BeautifulSoup to assist in webscraping.
