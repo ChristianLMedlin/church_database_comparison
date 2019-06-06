@@ -5,3 +5,12 @@ The data of the church will be added to a gitignore file to protect the privacy 
 
 # Current technologies being used
 This project makes use of Selenium for search automation, sqlite3 for the automatic storing of data into a local database to avoid rate-limit wait times after the initial setup, Requests to assist with API use, and BeautifulSoup to assist in webscraping.
+
+# Segregation of code
+Code that performs a specific act will be consolidated into it's appropriate .py file.
+### main.py
+This file will contain the core functionality of the program, such as comparing the data pulled using church_data_pull.py to the North Carolina Sex Offender Registry.
+### church_data_pull.py
+This will contain code written for the purpose of requesting relevant data from the Planning Center API and consolidating that within a nested dictionary. 
+### web_data_pull.py
+This will be used to pull any necessary HTML from the North Carolina Sex Offender Registry for us in the comparison contained within main.py
