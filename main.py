@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import requests
 import sqlite3
 import sys
-from API_Auth import create_key, create_secret
+from church_data_pull import pull_data_from_API
 
 ''' Much of the code that you see here is still in development and is a work in progress. Cleanup has not been performed yet. '''
 
@@ -32,3 +32,5 @@ def is_good_response(resp):
             and content_type is not None 
             and content_type.find('html') > -1)
 
+if __name__ == '__main__':
+    pull_data_from_API()

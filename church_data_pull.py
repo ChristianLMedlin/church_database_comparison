@@ -2,11 +2,29 @@ from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
+from selenium import webdriver
 import requests
 import sqlite3
 import sys
-from API_Auth import create_key, create_secret
+import time
+from API_Auth import create_key, create_secret, create_login, create_password
 
+
+#Returns the total number of members in the church's Planning Center database for use as the upper range limit in the pull_data_from_API function.
+def get_number_of_visitors():
+    login = create_login()
+    password = create_password()
+
+    driver = webdriver.Chrome()
+    
+    driver.get('https://accounts.planningcenteronline.com/?return=People%2F')
+    driver.find_element_by_id('email').send_keys(login)
+    driver.find_element_by_id('password').send_keys(password)
+    driver.find_element_by_name('commit').click()
+
+    number_of_visitors = driver.find_element_by_class_name('chart-total').get_attribute('innerHTML')
+    number_of_visitors = ''.join(number for number in number_of_visitors if number.isnumeric())
+    return(int(number_of_visitors) + 1)
 
 
 #Retrieves the appropriate data from the API for use in the store_items_in_database function.
@@ -18,27 +36,29 @@ def pull_data_from_API():
     my_secret = create_secret()
     params = (
         ('order', 'created_at'),
-        ('per_page', '100'),
+        ('per_page', '50'),
     )
     dict_of_members = {}
+    number_of_visitors = get_number_of_visitors()
 
-    for offset_number in range(0, 7000, 99):
+    for offset_number in range(0, number_of_visitors, 49):
         received_json = requests.get(f'''https://api.planningcenteronline.com/people/v2/people?offset={offset_number}''', params=params, auth=(my_key, my_secret)).json()
         try:
             for data_index in range(len(received_json["data"])):
-                first_name = ''.join(name for name in received_json["data"][data_index]["attributes"]['first_name'] if name.isalpha()).lower()
-                last_name =  ''.join(name for name in received_json["data"][data_index]["attributes"]['last_name'] if name.isalpha()).lower()
+                first_name = ''.join(name.lower() for name in received_json["data"][data_index]["attributes"]['first_name'] if name.isalpha())
+                last_name =  ''.join(name.lower() for name in received_json["data"][data_index]["attributes"]['last_name'] if name.isalpha())
                 full_name = first_name + ' ' + last_name
 
-                if full_name not in dict_of_members:
-                    dict_of_members[full_name] = [first_name, last_name]
+                dict_of_members[full_name] = [first_name, last_name]
         except:
             print("It broke.")
             print(len(dict_of_members))
-        print(len(dict_of_members))
 
+        print(len(dict_of_members))
+        time.sleep(2)
+    print(dict_of_members)
+    print(len(dict_of_members))
     return dict_of_members
-#Additional time should be put into this function to prevent it from breaking in the future if API Rate Limits are changed.
 
 
 #Creating an object for use in indexing data into the database
