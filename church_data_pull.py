@@ -14,15 +14,14 @@ from API_Auth import create_key, create_secret, create_login, create_password
 def get_number_of_visitors():
     login = create_login()
     password = create_password()
-
-    driver = webdriver.Chrome()
+    visitor_driver = webdriver.Chrome()
     
-    driver.get('https://accounts.planningcenteronline.com/?return=People%2F')
-    driver.find_element_by_id('email').send_keys(login)
-    driver.find_element_by_id('password').send_keys(password)
-    driver.find_element_by_name('commit').click()
+    visitor_driver.get('https://accounts.planningcenteronline.com/?return=People%2F')
+    visitor_driver.find_element_by_id('email').send_keys(login)
+    visitor_driver.find_element_by_id('password').send_keys(password)
+    visitor_driver.find_element_by_name('commit').click()
 
-    number_of_visitors = driver.find_element_by_class_name('chart-total').get_attribute('innerHTML')
+    number_of_visitors = visitor_driver.find_element_by_class_name('chart-total').get_attribute('innerHTML')
     number_of_visitors = ''.join(number for number in number_of_visitors if number.isnumeric())
     return(int(number_of_visitors) + 1)
 
