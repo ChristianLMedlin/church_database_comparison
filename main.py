@@ -29,8 +29,10 @@ def is_good_response(resp):
             and content_type is not None 
             and content_type.find('html') > -1)
 
+
 def registry_checker(members_to_check):
     registry_driver = webdriver.Chrome()
+    list_of_positives = []
 
     registry_driver.get('http://sexoffender.ncsbi.gov/disclaimer.aspx')
     registry_driver.find_element_by_id('agree').click()
@@ -40,10 +42,19 @@ def registry_checker(members_to_check):
         registry_driver.find_element_by_id('fname').send_keys(members_to_check[members][0])
         registry_driver.find_element_by_id('inclaliasnames').click()
         registry_driver.find_element_by_id('searchbutton1').click()
+        
+        try:
+            registry_driver.find_element_by_id('NoRowsFound')
+        except:
+            list_of_positives.append(members)
+
         registry_driver.execute_script("window.history.go(-1)")
         registry_driver.find_element_by_id('lname').clear()
         registry_driver.find_element_by_id('fname').clear()
 
+
+    print(list_of_positives)
+    print(len(list_of_positives))
 
 if __name__ == '__main__':
     registry_checker(pull_data_from_API())

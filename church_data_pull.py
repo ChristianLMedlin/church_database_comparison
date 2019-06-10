@@ -55,7 +55,6 @@ def pull_data_from_API():
 
         print(len(dict_of_members))
         time.sleep(2)
-    print(dict_of_members)
     print(len(dict_of_members))
     return dict_of_members
 

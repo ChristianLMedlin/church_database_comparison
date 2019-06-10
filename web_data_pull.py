@@ -6,8 +6,14 @@ from main import simple_get
 # driver = webdriver.Chrome()
 # driver.get("http://sexoffender.ncsbi.gov/disclaimer.aspx")
 # driver.find_element_by_id('agree').click()
-# driver.find_element_by_id('lname').send_keys("")
-# driver.find_element_by_id('fname').send_keys("")
+# driver.find_element_by_id('lname').send_keys("Medlin")
+# driver.find_element_by_id('fname').send_keys("Christian")
 # driver.find_element_by_id('inclaliasnames').click()
 # driver.find_element_by_id('searchbutton1').click()
+
+try:
+    driver.find_element_by_id('NoRowsFound')
+    print("clear")
+except:
+    print("Gotem")
 
