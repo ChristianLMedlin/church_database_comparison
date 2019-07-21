@@ -7,6 +7,7 @@ import requests
 import sqlite3
 import sys
 from church_data_pull import pull_data_from_API
+import smtplib, ssl
 
 ''' Much of the code that you see here is still in development and is a work in progress. Cleanup has not been performed yet. '''
 
@@ -69,9 +70,4 @@ Consider whether or not a SQL DB should be used after API information is collect
 
 Clean up code, imports, comments, and prints after completion
 
-Church still needs to provide an official E-Mail and password for use in the API Auth.
-
-Church needs to provide either an E-Mail or phone number to send matches to.
-
-Consider adding positive matches that have been cleared into a SQL DB to prevent the repeated mailing of their name.
 '''
