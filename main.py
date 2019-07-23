@@ -2,33 +2,16 @@ from requests import get
 from requests.exceptions import RequestException
 from selenium import webdriver
 from contextlib import closing
-from bs4 import BeautifulSoup
 import requests
 import sqlite3
 import sys
 from church_data_pull import pull_data_from_API
+from API_Auth import create_email, create_email_pass, create_target_email
 import smtplib, ssl
+from datetime import date
 
 ''' Much of the code that you see here is still in development and is a work in progress. Cleanup has not been performed yet. '''
 
-def simple_get(url):
-    try:
-        with closing(get(url, stream=True)) as resp:
-            if is_good_response(resp):
-                return resp.content
-            else:
-                return None
-
-    except RequestException as e:
-        log_error('Error during requests to {0} : {1}'.format(url, str(e)))
-        return None
-
-
-def is_good_response(resp):
-    content_type = resp.headers['Content-Type'].lower()
-    return (resp.status_code == 200 
-            and content_type is not None 
-            and content_type.find('html') > -1)
 
 #This uses Selenium to search through the NC Registry and appends any matches to a list
 def registry_checker(members_to_check):
@@ -58,16 +41,29 @@ def registry_checker(members_to_check):
 
     print(list_of_positives)
     print(len(list_of_positives))
+    return list_of_positives
+
+def email_setup():
+    names = registry_checker(pull_data_from_API())
+
+    context = ssl.create_default_context()
+    message = f"""\
+Subject: Automated Search results {date.today()}
+
+
+The search has returned {len(names)} potential matches, check the following names: 
+
+{names}
+
+Any newly matched names will appear at the end of the list.
+The NC Sex Offender Registry matches names that are similar in spelling to other names, this allows the system to account for typos as the expense of a few more false positives.
+If this system needs maintenance or you would like it to be changed in some way, contact ChristianLMedlin@gmail.com
+"""
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+        server.login(create_email(), create_email_pass())
+        server.sendmail(create_email(), create_target_email(), message)
+
 
 if __name__ == '__main__':
-    registry_checker(pull_data_from_API())
-
-
-'''
-The Except in pull_data_from_API should either be removed or should E-Mail the approriate person of the error message
-
-Consider whether or not a SQL DB should be used after API information is collected
-
-Clean up code, imports, comments, and prints after completion
-
-'''
+    email_setup()

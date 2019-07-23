@@ -1,12 +1,11 @@
 from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from datetime import date
 import requests
 import sqlite3
-import sys
+# import sys
 import time
 from API_Auth import create_key, create_secret, create_login, create_password
 
@@ -51,46 +50,21 @@ def pull_data_from_API():
 
     for offset_number in range(0, number_of_visitors, 49):
         received_json = requests.get(f'''https://api.planningcenteronline.com/people/v2/people?offset={offset_number}''', params=params, auth=(my_key, my_secret)).json()
-        try:
-            for data_index in range(len(received_json["data"])):
-                first_name = ''.join(name.lower() for name in received_json["data"][data_index]["attributes"]['first_name'] if name.isalpha())
-                last_name =  ''.join(name.lower() for name in received_json["data"][data_index]["attributes"]['last_name'] if name.isalpha())
-                date_of_birth = received_json["data"][data_index]["attributes"]["birthdate"]
-                full_name = first_name + ' ' + last_name
+        
+        for data_index in range(len(received_json["data"])):
+            first_name = ''.join(name.lower() for name in received_json["data"][data_index]["attributes"]['first_name'] if name.isalpha())
+            last_name =  ''.join(name.lower() for name in received_json["data"][data_index]["attributes"]['last_name'] if name.isalpha())
+            date_of_birth = received_json["data"][data_index]["attributes"]["birthdate"]
+            full_name = first_name + ' ' + last_name
 
-                if date_of_birth != None:
-                    age = return_age(date_of_birth)
+            if date_of_birth != None and first_name and last_name != '':
+                age = return_age(date_of_birth)
 
-                    if age > 0:
-                        dict_of_members[full_name] = [first_name, last_name, age]
-        except:
-            #This section should either be removed or it should E-Mail the appropriate person to alert them of a fatal change in the API.
-            print("It broke.")
-            print(len(dict_of_members))
+                if age > 0:
+                    dict_of_members[full_name] = [first_name, last_name, age]
 
         print(len(dict_of_members))
         time.sleep(2)
+
     print(len(dict_of_members))
     return dict_of_members
-
-
-#Creating an object for use in indexing data into the database
-# def store_items_in_database(json_data):
-#     church_data_connection = sqlite3.connect('church_data.db')
-#     data_cursor = church_data_connection.cursor()
-#     data_cursor.execute(''' CREATE TABLE IF NOT EXISTS church_members (ID INTEGER PRIMARY KEY AUTOINCREMENT, first_name VARCHAR(100), last_name VARCHAR(100), full_name VARCHAR(200)) ''')
-
-#     #for i in range(float('inf')):
-
-#     for id_number in range(len(json_data["data"])):
-#         first_name = json_data["data"][id_number]["attributes"]['first_name']
-#         last_name = json_data["data"][id_number]["attributes"]['last_name']
-#         full_name = json_data["data"][id_number]["attributes"]['name']
-#     #Make sure to add an IF statement to check whether or not a fullname is already in the database.
-#         data_cursor.execute(''' INSERT INTO church_members (first_name, last_name, full_name) VALUES(?, ?, ?) ''', (first_name, last_name, full_name))
-
-#     for row in data_cursor.execute(''' SELECT * FROM church_members '''):
-#         print(row)
-
-#     # for row in data_cursor.execute(''' SELECT ID FROM church_members ORDER BY ID DESC LIMIT 1 '''):
-#     #     print(row)
