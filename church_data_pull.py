@@ -5,7 +5,6 @@ from selenium import webdriver
 from datetime import date
 import requests
 import sqlite3
-# import sys
 import time
 from API_Auth import create_key, create_secret, create_login, create_password
 
@@ -63,8 +62,6 @@ def pull_data_from_API():
                 if age > 0:
                     dict_of_members[full_name] = [first_name, last_name, age]
 
-        print(len(dict_of_members))
         time.sleep(2)
 
-    print(len(dict_of_members))
     return dict_of_members

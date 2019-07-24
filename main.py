@@ -38,9 +38,6 @@ def registry_checker(members_to_check):
         registry_driver.find_element_by_id('fname').clear()
         registry_driver.find_element_by_id('age').clear()
 
-
-    print(list_of_positives)
-    print(len(list_of_positives))
     return list_of_positives
 
 def email_setup():
